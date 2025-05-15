@@ -1,42 +1,46 @@
 import React, { useEffect, useState } from "react";
 import usePublications from "../shared/hooks/usePublications";
-
-const cursos = [
-  { id: "curso1", name: "Curso 1" },
-  { id: "curso2", name: "Curso 2" },
-  { id: "curso3", name: "Curso 3" },
-];
+import useCourses from "../shared/hooks/useCourses";
 
 export const DashboardPage = () => {
   const { publications, loading, error, fetchPublicationsByCourse } = usePublications();
+  const { courses, loadingCourses, errorCourses } = useCourses();
+
   const [selectedCourse, setSelectedCourse] = useState("");
 
   useEffect(() => {
     fetchPublicationsByCourse(selectedCourse);
-  }, [selectedCourse]);
+  }, [selectedCourse, fetchPublicationsByCourse]);
 
   return (
     <div className="container mt-5">
       <h1 className="mb-4 text-center">Dashboard de Publicaciones</h1>
 
       <div className="mb-4 d-flex justify-content-center">
-        <select
-          className="form-select w-auto"
-          value={selectedCourse}
-          onChange={(e) => setSelectedCourse(e.target.value)}
-        >
-          <option value="">Todos los cursos</option>
-          {cursos.map((curso) => (
-            <option key={curso.id} value={curso.name}>
-              {curso.name}
-            </option>
-          ))}
-        </select>
+        {loadingCourses ? (
+          <div className="spinner-border" role="status" aria-label="Loading courses"></div>
+        ) : errorCourses ? (
+          <div className="alert alert-danger">{errorCourses}</div>
+        ) : (
+          <select
+            className="form-select w-auto"
+            value={selectedCourse}
+            onChange={(e) => setSelectedCourse(e.target.value)}
+            aria-label="Filtro de cursos"
+          >
+            <option value="">Todos los cursos</option>
+            {courses.map((course) => (
+              <option key={course._id} value={course.name}>
+                {course.name}
+              </option>
+            ))}
+          </select>
+        )}
       </div>
 
       {loading && (
         <div className="d-flex justify-content-center my-5">
-          <div className="spinner-border" role="status" aria-label="Loading"></div>
+          <div className="spinner-border" role="status" aria-label="Loading publications"></div>
         </div>
       )}
 

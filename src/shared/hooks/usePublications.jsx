@@ -1,16 +1,18 @@
-import { useState } from "react";
-import apiClient from "../../services/api";
+import { useState, useCallback } from "react";
+import apiClient from "../../services/api"; 
 
 const usePublications = () => {
   const [publications, setPublications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchPublicationsByCourse = async (courseName) => {
+  const fetchPublicationsByCourse = useCallback(async (courseName) => {
     setLoading(true);
     setError(null);
     try {
-      const url = courseName ? `/posts?course=${courseName}` : "/posts";
+      const url = courseName
+        ? `/posts?course=${encodeURIComponent(courseName)}`
+        : "/posts";
       const response = await apiClient.get(url);
       setPublications(response.data.posts || []);
     } catch (err) {
@@ -18,7 +20,7 @@ const usePublications = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   return {
     publications,

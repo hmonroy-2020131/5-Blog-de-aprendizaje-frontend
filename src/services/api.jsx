@@ -81,7 +81,7 @@ export const deleteComment = async (id) => {
 
 export const getCommentsByPostId = async (postId) => {
   try {
-    const response = await apiClient.get(`/comments/post/${postId}`);
+    const response = await apiClient.get(`/post/${postId}`); 
     return response.data; 
   } catch (e) {
     return { error: true, e };
@@ -94,6 +94,15 @@ export const getCourses = async () => {
     return response.data; 
   } catch (e) {
     return { error: true, e };
+  }
+};
+
+export const getPublicationById = async (id) => {
+  try {
+    const response = await apiClient.get(`/posts/${id}`);
+    return response.data;
+  } catch (e) {
+    return { error: true, message: e.message };
   }
 };
 
